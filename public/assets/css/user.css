@@ -1,0 +1,305 @@
+/* Header Styling */
+.navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #007bff;
+}
+
+.navbar-nav .nav-link {
+    color: #555;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #007bff;
+}
+
+.dropdown-menu {
+    border-radius: 8px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Banner Styling */
+
+
+/* Modal Styling */
+.modal-content {
+    border-radius: 12px;
+    animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* General Styling for Modal */
+.modal-body {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.modal-body p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Cart Item Styling */
+
+.cart-item img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.img-thumbnail {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.item-details {
+    margin-left: 15px;
+    flex-grow: 1;
+}
+
+.item-details h6 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.item-details small {
+    font-size: 14px;
+    color: #999;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.item-details p {
+    font-size: 14px;
+    color: #e63946;
+    margin: 0;
+}
+
+/* Button Styling */
+.btn-danger {
+    font-size: 14px;
+    padding: 5px 10px;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    box-shadow: 0 2px 5px rgba(200, 35, 51, 0.5);
+}
+
+.modal-body {
+    max-height: 730px;
+    /* Chiều cao tối đa của phần giỏ hàng */
+    overflow-y: auto;
+    /* Cho phép cuộn dọc */
+}
+
+#cart-count {
+    position: relative;
+    top: -10px;
+    right: 13px;
+    font-size: 15px;
+    color: white;
+    background-color: red;
+    border-radius: 50%;
+    padding: 3px 5px;
+    margin: 0;
+}
+
+/* Total Price Styling */
+.text-primary {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.text-primary span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* User Menu */
+.user-menu {
+    position: relative;
+    margin-right: 15px;
+}
+
+.user-menu:hover {
+    cursor: pointer;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: -140px;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 180px;
+    z-index: 10;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.user-dropdown a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+}
+
+.user-dropdown a:hover {
+    background-color: #f1f1f1;
+}
+
+.user-menu:hover .user-dropdown {
+    display: block;
+}
+
+/* Optional: Add a fade-in effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Footer */
+footer {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+}
+
+footer a {
+    color: white;
+    text-decoration: underline;
+}
+
+
+/* CSS cho hamburger menu trên mobile */
+@media (max-width: 768px) {
+
+    /* Chỉnh sửa để hamburger icon hiển thị khi màn hình nhỏ */
+    .navbar-toggler {
+        display: block;
+        /* Hiển thị hamburger */
+        background-color: transparent;
+        border: none;
+        padding: 0.5rem;
+    }
+
+    /* Giấu menu chính (navbar-collapse) khi chưa nhấn vào hamburger */
+    .navbar-collapse {
+        display: none;
+    }
+
+    /* Khi nhấn vào hamburger, menu sẽ hiển thị */
+    .navbar-collapse.show {
+        display: block;
+        background-color: #fff;
+    }
+
+    /* Tùy chỉnh navbar để dễ nhìn trên mobile */
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .navbar-nav .nav-item {
+        text-align: center;
+        width: 100%;
+        padding: 0.75rem 0;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 1rem;
+        color: #333;
+    }
+
+    /* Điều chỉnh dropdown menu cho mobile */
+    .dropdown-menu {
+        position: static;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Menu người dùng hiển thị theo chiều dọc trên mobile */
+    .user-menu {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .user-dropdown {
+        width: 100%;
+        padding: 0;
+        border: none;
+        background-color: transparent;
+    }
+
+    .user-dropdown a {
+        padding: 0.75rem;
+        text-align: center;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+
+    .user-dropdown a:hover {
+        background-color: #e9ecef;
+    }
+
+    /* Giỏ hàng full width trên mobile */
+    .btn-outline {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Responsive cho các thành phần khác */
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+}

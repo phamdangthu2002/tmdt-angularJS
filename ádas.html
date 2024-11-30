@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loader Example</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Ngăn cuộn khi hiển thị loader */
+        }
+
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-text {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Nội dung trang web */
+        .main-content {
+            display: none; /* Ẩn nội dung ban đầu */
+        }
+    </style>
+</head>
+<body>
+    <div class="loader-container">
+        <div class="loader"></div>
+        <div class="loader-text">Loading...</div>
+    </div>
+
+    <div class="main-content">
+        <!-- Nội dung trang web -->
+        <h1>Welcome to My Website</h1>
+        <p>This is the content of the website after the loader.</p>
+    </div>
+
+    <script>
+        // Script hiển thị loader trong 5 giây
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                // Ẩn loader
+                document.querySelector('.loader-container').style.display = 'none';
+                // Hiển thị nội dung chính
+                document.querySelector('.main-content').style.display = 'block';
+                // Cho phép cuộn
+                document.body.style.overflow = 'auto';
+            }, 5000); // 5000ms = 5 giây
+        });
+    </script>
+</body>
+</html>

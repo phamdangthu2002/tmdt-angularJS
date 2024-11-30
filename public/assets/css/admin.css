@@ -1,0 +1,147 @@
+li {
+    list-style: none;
+}
+
+/* .bg-dark {
+    background-color: #4d4d4d !important;
+} */
+
+/* Menu sidebar */
+#sidebar {
+    transition: all 0.3s ease;
+    width: 250px;
+    position: fixed;
+    height: 100vh;
+}
+
+#sidebar.collapsed {
+    width: 80px;
+}
+
+#sidebar.collapsed .nav-link span,
+#sidebar.collapsed #logo {
+    display: none;
+}
+
+#sidebar.collapsed .nav-link i {
+    margin-left: 0;
+}
+
+#sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+#sidebar .nav-link i {
+    font-size: 1rem;
+}
+
+#menu-bar {
+    border: none;
+    background: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#sidebar.collapsed+#main-content {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+}
+
+/* Dashboard content */
+#main-content {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+}
+
+.dashboard-card {
+    margin-bottom: 30px;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+
+    /* Tablet */
+    #sidebar {
+        width: 200px;
+    }
+
+    #main-content {
+        margin-left: 200px;
+    }
+
+    .dashboard-card {
+        margin-bottom: 20px;
+    }
+
+    .nav-link span {
+        display: none;
+        /* Hide labels in tablet view */
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* Mobile */
+    #sidebar {
+        width: 60px;
+    }
+
+    #main-content {
+        margin-left: 60px;
+    }
+
+    #sidebar.collapsed+#main-content {
+        margin-left: 60px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-header {
+        font-size: 1.1rem;
+    }
+
+    .dashboard-card {
+        margin-bottom: 20px;
+    }
+
+    .nav-link span {
+        display: none;
+        /* Hide text for mobile view */
+    }
+}
+
+@media (max-width: 576px) {
+
+    /* Small screens */
+    #sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    #main-content {
+        margin-left: 0;
+    }
+
+    .card-body {
+        padding: 0.8rem;
+    }
+
+    .card-header {
+        font-size: 1rem;
+    }
+
+    .dashboard-card {
+        margin-bottom: 15px;
+    }
+}
