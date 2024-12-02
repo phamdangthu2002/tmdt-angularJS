@@ -1,58 +1,63 @@
 @extends('admin.layouts.index')
 @section('content')
+    @include('admin.layouts.breadcrumb')
     <div class="container mt-5" ng-controller="productController">
-        <h1 class="text-center mb-4">Quản Lý Sản Phẩm</h1>
-        <div class="text-center" ng-show="isLoading">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="text-center mb-4">Quản Lý Sản Phẩm</h1>
+                <div class="text-center" ng-show="isLoading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div ng-if="products.length === 0" class="alert alert-warning">
+                    Không sản phẩm nào.
+                </div>
+                <!-- Bảng danh sách sản phẩm -->
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Giá</th>
+                            <th>Giá Khuyến Mãi</th>
+                            <th>Danh mục</th>
+                            <th>Mô tả</th>
+                            <th>Slug</th>
+                            <th>Trong kho</th>
+                            <th>Trạng Thái</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="product in products">
+                            <td>@{{ product.id }}</td>
+                            <td>
+                                <img ng-if="product.images.length > 0" ng-src="@{{ product.images[0].url }}"
+                                    alt="@{{ product.name }}" width="50">
+                            </td>
+                            <td>@{{ product.name }}</td>
+                            <td>@{{ product.price | currency: 'VND ': 0 }}</td>
+                            <td>@{{ product.price_sale | currency: 'VND ': 0 }}</td>
+                            <td>@{{ product.category.name }}</td>
+                            <td>@{{ product.mota }}</td>
+                            <td>@{{ product.slug }}</td>
+                            <td>@{{ product.quantity_in_stock }}</td>
+                            <td>
+                                <span ng-if="product.trangthai === 'active'" class="badge text-success">Kích hoạt</span>
+                                <span ng-if="product.trangthai === 'inactive'" class="badge text-danger">Khóa</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" ng-click="openEditModal(product.id)">Sửa</button>
+                                <button class="btn btn-warning btn-sm" ng-click="openEditModalAnh(product.id)">Ảnh</button>
+                                <button class="btn btn-danger btn-sm" ng-click="deleteProduct(product.id)">Xóa</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div ng-if="products.length === 0" class="alert alert-warning">
-            Không sản phẩm nào.
-        </div>
-        <!-- Bảng danh sách sản phẩm -->
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Image</th>
-                    <th>Tên Sản Phẩm</th>
-                    <th>Giá</th>
-                    <th>Giá Khuyến Mãi</th>
-                    <th>Danh mục</th>
-                    <th>Mô tả</th>
-                    <th>Slug</th>
-                    <th>Trong kho</th>
-                    <th>Trạng Thái</th>
-                    <th>Thao Tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="product in products">
-                    <td>@{{ product.id }}</td>
-                    <td>
-                        <img ng-if="product.images.length > 0" ng-src="@{{ product.images[0].url }}" alt="@{{ product.name }}"
-                            width="50">
-                    </td>
-                    <td>@{{ product.name }}</td>
-                    <td>@{{ product.price | currency: 'VND ': 0 }}</td>
-                    <td>@{{ product.price_sale | currency: 'VND ': 0 }}</td>
-                    <td>@{{ product.category.name }}</td>
-                    <td>@{{ product.mota }}</td>
-                    <td>@{{ product.slug }}</td>
-                    <td>@{{ product.quantity_in_stock }}</td>
-                    <td>
-                        <span ng-if="product.trangthai === 'active'" class="badge text-success">Kích hoạt</span>
-                        <span ng-if="product.trangthai === 'inactive'" class="badge text-danger">Khóa</span>
-                    </td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" ng-click="openEditModal(product.id)">Sửa</button>
-                        <button class="btn btn-warning btn-sm" ng-click="openEditModalAnh(product.id)">Ảnh</button>
-                        <button class="btn btn-danger btn-sm" ng-click="deleteProduct(product.id)">Xóa</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 
     <!-- Modal thêm/sửa sản phẩm -->
@@ -157,7 +162,7 @@
                             <label for="imageInput">Chọn ảnh</label>
                             <input type="file" id="imageInput" class="form-control" accept="image/*" multiple
                                 onchange="angular.element(this).scope().previewImages(this)" ng-model="url">
-                        </div>                        
+                        </div>
                         <div class="form-group">
                             <label class="mt-3 mb-3">Danh sách ảnh đã thêm:</label>
                             <div id="existingImages"

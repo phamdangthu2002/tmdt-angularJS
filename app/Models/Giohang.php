@@ -10,6 +10,7 @@ class Giohang extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'trangthai',
     ];
     public function user()
     {

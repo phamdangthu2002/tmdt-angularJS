@@ -10,12 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('chitietdonhangs', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('donhang_id')->constrained()->onDelete('cascade');
-            $table->foreignId('sanpham_id')->constrained()->onDelete('cascade');
-            $table->integer('quantity');
-            $table->decimal('price', 15, 2); // Lưu giá của sản phẩm khi đặt hàng
+            $table->foreignId('donhang_id')->constrained('donhangs')->onDelete('cascade');
+            $table->enum('phuongthuc', ['Visa', 'MasterCard', 'Momo', 'COD']);
+            $table->enum('trangthai', ['pending', 'completed', 'failed'])->default('pending');
+            $table->decimal('tong', 15, 2);
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('chitietdonhangs');
+        Schema::dropIfExists('payments');
     }
 };

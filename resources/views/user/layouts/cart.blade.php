@@ -58,7 +58,7 @@
                     <h5 class="text-end">Tổng: <span class="text-success" id="cartTotal">@{{ total | number }}
                             VNĐ</span></h5>
                     <div>
-                        <a href="#" class="btn btn-primary">Thanh Toán</a>
+                        <a href="#" class="btn btn-primary" ng-click="Thanhtoan()">Thanh Toán</a>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>

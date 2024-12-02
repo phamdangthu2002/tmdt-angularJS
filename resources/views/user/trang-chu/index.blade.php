@@ -296,18 +296,15 @@
                                 </div>
                             </div>
                             <!-- Nút Thêm Vào Giỏ Hàng và Mua Ngay -->
-                            <div class="mt-3">
+                            <div class="mt-5">
                                 <!-- Nút Thêm Vào Giỏ Hàng, gọi hàm addToCart và truyền user_id -->
                                 @auth
                                     {{-- <button class="btn btn-success w-100" ng-click="addToCart(sanphamDetail.user_id)">Thêm Vào
                                         Giỏ Hàng</button> --}}
-                                    <button class="btn btn-success w-100" ng-click="addToCart()">Thêm Vào
-                                        Giỏ Hàng</button>
+                                    <button class="btn btn-danger w-100" ng-click="addToCart()">Mua ngay</button>
                                 @else
-                                    <button class="btn btn-secondary w-100" onclick="showLoginAlert()">Thêm Vào Giỏ
-                                        Hàng</button>
+                                    <button class="btn btn-secondary w-100" onclick="showLoginAlert()">Mua ngay</button>
                                 @endauth
-                                <button class="btn btn-danger w-100 mt-2" ng-click="buy()">Mua Ngay</button>
                             </div>
                         </div>
                     </div>

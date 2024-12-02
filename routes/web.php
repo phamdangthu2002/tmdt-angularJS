@@ -3,6 +3,7 @@
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\DanhmucController;
 use App\Http\Controllers\admin\SanphamController;
+use App\Http\Controllers\admin\TrangthaiController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\user\UserController;
@@ -41,6 +42,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('/show', [SanphamController::class, 'show'])->name('admin.showSanpham');
     });
 
+    Route::prefix('trang-thai')->group(function () {
+        Route::get('/', [TrangthaiController::class, 'trangthai'])->name('admin.trangthai');
+        Route::get('/show', [TrangthaiController::class, 'show'])->name('admin.showTrangthai');
+    });
+
     Route::get('/user', [AdminUserController::class, 'index'])->name('admin.user');
     Route::get('/show', [AdminUserController::class, 'show'])->name('admin.showUser');
 });
@@ -48,4 +54,5 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 Route::prefix('user')->group(function () {
     Route::get('/trang-chu', [UserController::class, 'index'])->name('user.trangchu');// trang chu
     Route::get('/danh-muc', [UserController::class, 'danhmuc'])->name('user.danhmuc');// danh muc
+    Route::get('/thanh-toan/{id}',[UserController::class,'thanhtoan'])->name('user.thanhtoan');
 });

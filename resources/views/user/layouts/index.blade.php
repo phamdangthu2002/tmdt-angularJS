@@ -362,6 +362,11 @@
                 $scope.getCart();
             });
 
+            $scope.Thanhtoan = function() {
+                const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }};
+                window.location.href = '/user/thanh-toan/' + user_id;
+            }
+
             // Gọi khi khởi tạo
             $scope.getCart();
         });

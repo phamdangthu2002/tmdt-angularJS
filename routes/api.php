@@ -43,12 +43,20 @@ Route::prefix('san-pham')->group(function () {
     Route::post('/upload-anh', [ApiController::class, 'uploadAnh']);
     Route::delete('/delete-anh/{id}', [ApiController::class, 'delAnh']);
 
-    Route::get('/danhmuc/{id}',[ApiController::class,'sanphamDanhmucID']);
+    Route::get('/danhmuc/{id}', [ApiController::class, 'sanphamDanhmucID']);
 
     Route::prefix('cart')->group(function () {
         Route::post('/add', [ApiController::class, 'addToCart']);
         Route::get('/all/{id}', [ApiController::class, 'allCart']);
     });
+});
+
+Route::prefix('trang-thai')->group(function () {
+    Route::post('/add', [ApiController::class, 'addTrangThai']);
+    Route::get('/all', [ApiController::class, 'allTrangThai']);
+    Route::get('/get/{id}', [ApiController::class, 'getTrangThai']);
+    Route::put('/update/{id}', [ApiController::class, 'updateTrangThai']);
+    Route::delete('/delete/{id}', [ApiController::class, 'deleteTrangThai']);
 });
 
 Route::prefix('user')->group(function () {
@@ -57,4 +65,5 @@ Route::prefix('user')->group(function () {
     Route::get('/get/{id}', [ApiController::class, 'getUser']);
     Route::post('/update/{id}', [ApiController::class, 'updateUser']);
 });
+Route::post('/thanh-toan/{id}', [ApiController::class, 'thanhtoan']);
 Route::post('/upload/services', [ApiController::class, 'upload']);

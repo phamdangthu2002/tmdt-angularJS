@@ -38,6 +38,7 @@ app.controller("ctrlDanhmuc", function ($scope, $http) {
             function (response) {
                 alert("Đã thêm thành công");
                 console.log("Danh mục đã được thêm: ", response.data);
+                $scope.category = {}; // Xóa dữ liệu trong form
                 // Có thể thêm logic xử lý sau khi thành công, ví dụ thông báo
             },
             function (error) {
@@ -182,6 +183,7 @@ app.controller("ctrlProduct", function ($scope, $http) {
                     // Cập nhật lại danh sách sản phẩm nếu cần
                     alert("Thêm sản phẩm thành công!");
                     console.log(response.data); // Log dữ liệu trả về từ server
+                    $scope.product = {};
                 },
                 function (error) {
                     console.log("Lỗi khi thêm sản phẩm", error);
@@ -585,9 +587,7 @@ app.controller("ctrUserEdit", function ($scope, $http, $rootScope) {
                 return; // Dừng lại nếu ngày sinh không hợp lệ
             }
         }
-        $http
-            .post("/api/user/update/" + $scope.userEdit.id, $scope.userEdit) // Sửa tham số URL
-            .then(
+        $http.post("/api/user/update/" + $scope.userEdit.id, $scope.userEdit).then(
                 function (response) {
                     alert("Cập nhật thông tin người dùng thành công!");
                     $scope.userEdit = {};
@@ -613,5 +613,95 @@ app.controller("ctrUserEdit", function ($scope, $http, $rootScope) {
             .finally(function () {
                 $scope.isLoading = false; // Kết thúc loading
             });
+    };
+});
+
+///////////////////////////////////////////////trang thai///////////////////////////////////////////
+app.controller("ctrlTrangthai", function ($scope, $http) {
+    $scope.trangthai = {
+        name: "",
+        description: "",
+    };
+    $scope.Them = function () {
+        $http.post("/api/trang-thai/add", $scope.trangthai).then(
+            function (response) {
+                alert("Thêm trạng thái thành công!");
+                $scope.trangthai = response.data.data;
+                $scope.trangthai = {};
+            },
+            function (error) {
+                alert("Lỗi khi thêm trạng thái!");
+                console.log(error);
+            }
+        );
+    };
+});
+
+app.controller("ctrlShowTrangthai", function ($scope, $http) {
+    $scope.trangthai = {
+        name: "",
+        description: "",
+    };
+    $http.get("/api/trang-thai/all").then(
+        function (response) {
+            $scope.trangthais = response.data.trangthai;
+            console.log($scope.trangthais);
+        },
+        function (error) {
+            console.log("Lỗi khi lấy danh sách trạng thái:", error);
+        }
+    );
+    $scope.SuaTrangthai = function (id) {
+        $http.get("/api/trang-thai/get/" + id).then(
+            function (response) {
+                $scope.trangthai = response.data.trangthai;
+                console.log($scope.trangthai);
+            },
+            function (error) {
+                console.log("Lỗi khi lấy trạng thái:", error);
+            }
+        );
+    };
+    $scope.Update = function (id) {
+        $http.put("/api/trang-thai/update/" + id, $scope.trangthai).then(
+            function (response) {
+                alert("Cập nhật trạng thái thành công!");
+                console.log(response.data);
+                $scope.trangthai = {};
+                $http.get("/api/trang-thai/all").then(
+                    function (response) {
+                        $scope.trangthais = response.data.trangthai;
+                        console.log($scope.trangthais);
+                    },
+                    function (error) {
+                        console.log("Lỗi khi lấy danh sách trạng thái:", error);
+                    }
+                );
+            },
+            function (error) {
+                alert("Lỗi khi cập nhật trạng thái!");
+                console.log(error);
+            }
+        );
+    };
+    $scope.DeleteTrangthai = function (id) {
+        $http.delete("/api/trang-thai/delete/" + id).then(
+            function (response) {
+                alert("Xóa trạng thái thành công!");
+                console.log(response.data);
+                $http.get("/api/trang-thai/all").then(
+                    function (response) {
+                        $scope.trangthais = response.data.trangthai;
+                    },
+                    function (error) {
+                        console.log("Lỗi khi lấy danh sách trạng thái:", error);
+                    }
+                );
+            },
+            function (error) {
+                alert("Lỗi khi xóa trạng thái!");
+                console.log(error);
+            }
+        );
     };
 });

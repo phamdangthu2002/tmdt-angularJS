@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('giohangs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('trangthai')->default('Chưa đặt hàng');
             $table->timestamps();
         });
     }
@@ -22,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('carts');
+        Schema::dropIfExists('giohangs');
     }
 };

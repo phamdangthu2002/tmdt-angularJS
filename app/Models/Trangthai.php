@@ -8,8 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Trangthai extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'name',
+        'description',
+    ];
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Donhang::class);
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('trangthai_id')->constrained()->onDelete('cascade');
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 15, 2);
             $table->timestamp('ngaydathang');
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('donhangs');
     }
 };

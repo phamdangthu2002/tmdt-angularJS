@@ -5,14 +5,20 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Models\Anhsanpham;
 use App\Models\Category;
+use App\Models\Chitietdonhang;
 use App\Models\Chitietgiohang;
+use App\Models\Donhang;
 use App\Models\Giohang;
+use App\Models\Payment;
+use App\Models\Payment_info;
+use App\Models\Payment_information;
 use App\Models\Sanpham;
+use App\Models\Trangthai;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use JWTAuth; // Nếu bạn dùng JWT, hoặc auth nếu dùng Auth thông thường
@@ -270,11 +276,12 @@ class ApiController extends Controller
         ], 200);
     }
 
-    public function sanphamDanhmucID($id){
-        $sanphams = Sanpham::with('category')->with('images')->where('category_id','=',$id)->get();
+    public function sanphamDanhmucID($id)
+    {
+        $sanphams = Sanpham::with('category')->with('images')->where('category_id', '=', $id)->get();
         return response()->json([
             'data' => $sanphams
-            ], 200);
+        ], 200);
     }
 
     public function getSanPham($id)
@@ -436,7 +443,7 @@ class ApiController extends Controller
     public function allCart($id)
     {
         // Tìm giỏ hàng của người dùng
-        $cart = Giohang::where('user_id', $id)->first();
+        $cart = Giohang::where('user_id', $id)->where('trangthai','Chưa đặt hàng')->first();
 
         if (!$cart) {
             return response()->json([
@@ -583,5 +590,129 @@ class ApiController extends Controller
 
     }
 
+    /////////////////////////////////////////trang thai/////////////////////////////////////////////
+    public function addTrangThai(Request $request)
+    {
+        $trangthai = Trangthai::create([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+        ]);
+        return response()->json([
+            'trangthai' => $trangthai
+        ], 200);
+    }
+
+    public function allTrangThai()
+    {
+        $trangthai = Trangthai::all();
+        return response()->json([
+            'trangthai' => $trangthai
+        ], 200);
+    }
+
+    public function getTrangThai($id)
+    {
+        $trangthai = Trangthai::find($id);
+        if (!$trangthai) {
+            return response()->json([
+                'error' => 'Trạng thái không tồn tại'
+            ], 404);
+        }
+        return response()->json([
+            'trangthai' => $trangthai
+        ], 200);
+    }
+
+    public function updateTrangThai(Request $request, $id)
+    {
+        $trangthai = Trangthai::find($id);
+        if (!$trangthai) {
+            return response()->json([
+                'error' => 'Trạng thái không tồn tại'
+            ], 404);
+        }
+        $trangthai->update([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+        ]);
+        return response()->json([
+            'trangthai' => $trangthai
+        ], 200);
+    }
+
+    public function deleteTrangThai($id)
+    {
+        $trangthai = Trangthai::find($id);
+        if (!$trangthai) {
+            return response()->json([
+                'error' => 'Trạng thái không tồn tại'
+            ], 404);
+        }
+        $trangthai->delete();
+        return response()->json([
+            'message' => 'Xóa trạng thái thành công'
+        ], 200);
+    }
+
+    /////////////////////////////////////////////////////////thanh toan////////////////////////////////////////////
+    public function thanhtoan(Request $request, $id)
+    {
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $phone = $request->input('phone');
+        $diachi = $request->input('diachi');
+        $price = $request->input('price');
+        $sanpham_id = $request->input('sanpham_id');
+        $quantity = $request->input('quantity');
+        $trangthai_id = 1;
+        $phuongthuc = $request->input('phuongthuc');
+        // dd($name, $email, $phone, $diachi, $price, $sanpham_id, $quantity, $phuongthuc);
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'error' => 'Người dùng không tồn tại'
+            ], 404);
+        }
+        $user->update([
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'diachi' => $diachi,
+        ]);
+
+        $donhang = Donhang::create([
+            'user_id' => $id,
+            'trangthai_id' => $trangthai_id,
+            'price' => $price,
+            'ngaydathang' => Carbon::now(),
+        ]);
+
+        $chitietdonhang = Chitietdonhang::create([
+            'donhang_id' => $donhang->id,
+            'sanpham_id' => $sanpham_id,
+            'quantity' => $quantity,
+            'price' => $price,
+        ]);
+        $thanhtoan = Payment::create([
+            'donhang_id' => $donhang->id,
+            'phuongthuc' => $phuongthuc,
+            'tong' => $price,
+        ]);
+        $thongtinthanhtoan = Payment_information::create([
+            'user_id' => $user->id,
+            'phuongthuc' => $phuongthuc,
+            'tong' => $price,
+        ]);
+        $giohang = new Giohang();
+        $giohang->trangthai = 'Đã đặt hàng';
+        $giohang->save();
+        return response()->json([
+            'thanhtoan' => $thanhtoan,
+            'donhang' => $donhang,
+            'chitietdonhang' => $chitietdonhang,
+            'user' => $user,
+            'thongtinthanhtoan' => $thongtinthanhtoan,
+        ], 200);
+    }
 }
 

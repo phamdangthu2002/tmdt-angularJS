@@ -112,6 +112,28 @@
                                 </a>
                             </li>
                         </ul>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-white" data-bs-toggle="collapse"
+                            data-bs-target="#trangthaii" aria-expanded="false">
+                            <i class="bx bx-station me-2"></i>
+                            <span>Trạng thái</span>
+                        </a>
+                        <!-- Submenu Dashboard -->
+                        <ul id="trangthaii" class="collapse ms-3">
+                            <li>
+                                <a href="/admin/trang-thai/" class="item nav-link text-white" style="font-size: 13px">
+                                    <i class="bx bx-edit-alt me-2" style="font-size: 13px"></i>
+                                    <span>Thêm mới</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/admin/trang-thai/show" class="item nav-link text-white"
+                                    style="font-size: 13px">
+                                    <i class="bx bx-cog me-2" style="font-size: 13px"></i>
+                                    <span>Quản lý</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <!-- Mục Logout -->
