@@ -54,5 +54,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 Route::prefix('user')->group(function () {
     Route::get('/trang-chu', [UserController::class, 'index'])->name('user.trangchu');// trang chu
     Route::get('/danh-muc', [UserController::class, 'danhmuc'])->name('user.danhmuc');// danh muc
-    Route::get('/thanh-toan/{id}',[UserController::class,'thanhtoan'])->name('user.thanhtoan');
+    Route::get('/thanh-toan/{id}', [UserController::class, 'thanhtoan'])->name('user.thanhtoan');
+    Route::post('/thanh-toan/payment/{id}', [UserController::class, 'payment'])->name('user.payment');
+
 });

@@ -65,5 +65,5 @@ Route::prefix('user')->group(function () {
     Route::get('/get/{id}', [ApiController::class, 'getUser']);
     Route::post('/update/{id}', [ApiController::class, 'updateUser']);
 });
-Route::post('/thanh-toan/{id}', [ApiController::class, 'thanhtoan']);
+// Route::post('/thanh-toan/{id}', [ApiController::class, 'thanhtoan']);
 Route::post('/upload/services', [ApiController::class, 'upload']);

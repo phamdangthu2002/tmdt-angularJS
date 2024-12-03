@@ -401,14 +401,14 @@ class ApiController extends Controller
         }
 
         // Tìm giỏ hàng của người dùng, nếu không có thì tạo mới
-        $cart = Giohang::where('user_id', $user_id)->first();
+        // $cart = Giohang::where('user_id', $user_id)->first();
 
-        if (!$cart) {
+        // if (!$cart) {
             // Nếu chưa có giỏ hàng, tạo giỏ hàng mới
             $cart = new Giohang();
             $cart->user_id = $user_id;
             $cart->save();
-        }
+        // }
 
         // Tìm chi tiết giỏ hàng của sản phẩm, kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
         $cartItem = Chitietgiohang::where('giohang_id', $cart->id)
@@ -443,7 +443,7 @@ class ApiController extends Controller
     public function allCart($id)
     {
         // Tìm giỏ hàng của người dùng
-        $cart = Giohang::where('user_id', $id)->where('trangthai','Chưa đặt hàng')->first();
+        $cart = Giohang::where('user_id', $id)->where('trangthai', 'Chưa đặt hàng')->first();
 
         if (!$cart) {
             return response()->json([
@@ -655,64 +655,72 @@ class ApiController extends Controller
     }
 
     /////////////////////////////////////////////////////////thanh toan////////////////////////////////////////////
-    public function thanhtoan(Request $request, $id)
-    {
-        $name = $request->input('name');
-        $email = $request->input('email');
-        $phone = $request->input('phone');
-        $diachi = $request->input('diachi');
-        $price = $request->input('price');
-        $sanpham_id = $request->input('sanpham_id');
-        $quantity = $request->input('quantity');
-        $trangthai_id = 1;
-        $phuongthuc = $request->input('phuongthuc');
-        // dd($name, $email, $phone, $diachi, $price, $sanpham_id, $quantity, $phuongthuc);
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json([
-                'error' => 'Người dùng không tồn tại'
-            ], 404);
-        }
-        $user->update([
-            'name' => $name,
-            'email' => $email,
-            'phone' => $phone,
-            'diachi' => $diachi,
-        ]);
+    // public function thanhtoan(Request $request, $id)
+    // {
+    //     $name = $request->input('name');
+    //     $email = $request->input('email');
+    //     $phone = $request->input('phone');
+    //     $diachi = $request->input('diachi');
+    //     $price = $request->input('price');
+    //     $sanpham_id = $request->input('sanpham_id');
+    //     $quantity = $request->input('quantity');
+    //     $trangthai_id = 1;
+    //     $phuongthuc = $request->input('phuongthuc');
+    //     // dd($name, $email, $phone, $diachi, $price, $sanpham_id, $quantity, $phuongthuc);
+    //     $user = User::find($id);
+    //     if (!$user) {
+    //         return response()->json([
+    //             'error' => 'Người dùng không tồn tại'
+    //         ], 404);
+    //     }
+    //     $user->update([
+    //         'name' => $name,
+    //         'email' => $email,
+    //         'phone' => $phone,
+    //         'diachi' => $diachi,
+    //     ]);
 
-        $donhang = Donhang::create([
-            'user_id' => $id,
-            'trangthai_id' => $trangthai_id,
-            'price' => $price,
-            'ngaydathang' => Carbon::now(),
-        ]);
+    //     $donhang = Donhang::create([
+    //         'user_id' => $id,
+    //         'trangthai_id' => $trangthai_id,
+    //         'price' => $price,
+    //         'ngaydathang' => Carbon::now(),
+    //     ]);
 
-        $chitietdonhang = Chitietdonhang::create([
-            'donhang_id' => $donhang->id,
-            'sanpham_id' => $sanpham_id,
-            'quantity' => $quantity,
-            'price' => $price,
-        ]);
-        $thanhtoan = Payment::create([
-            'donhang_id' => $donhang->id,
-            'phuongthuc' => $phuongthuc,
-            'tong' => $price,
-        ]);
-        $thongtinthanhtoan = Payment_information::create([
-            'user_id' => $user->id,
-            'phuongthuc' => $phuongthuc,
-            'tong' => $price,
-        ]);
-        $giohang = new Giohang();
-        $giohang->trangthai = 'Đã đặt hàng';
-        $giohang->save();
-        return response()->json([
-            'thanhtoan' => $thanhtoan,
-            'donhang' => $donhang,
-            'chitietdonhang' => $chitietdonhang,
-            'user' => $user,
-            'thongtinthanhtoan' => $thongtinthanhtoan,
-        ], 200);
-    }
+    //     $chitietdonhang = Chitietdonhang::create([
+    //         'donhang_id' => $donhang->id,
+    //         'sanpham_id' => $sanpham_id,
+    //         'quantity' => $quantity,
+    //         'price' => $price,
+    //     ]);
+    //     $thanhtoan = Payment::create([
+    //         'donhang_id' => $donhang->id,
+    //         'phuongthuc' => $phuongthuc,
+    //         'tong' => $price,
+    //     ]);
+    //     $thongtinthanhtoan = Payment_information::create([
+    //         'user_id' => $user->id,
+    //         'phuongthuc' => $phuongthuc,
+    //         'tong' => $price,
+    //     ]);
+    //     $giohang = new Giohang();
+    //     $giohang = Giohang::where('user_id', $user->id)->first();
+    //     $giohang->trangthai = 'Đã đặt hàng';
+    //     $giohang->save();
+    //     return response()->json(
+    //         [
+    //             'status' => 'success',
+    //             'message' => 'Đặt hàng thành công',
+    //             'data' => [
+    //                 'thanhtoan' => $thanhtoan,
+    //                 'donhang' => $donhang,
+    //                 'chitietdonhang' => $chitietdonhang,
+    //                 'user' => $user,
+    //                 'thongtinthanhtoan' => $thongtinthanhtoan,
+    //             ]
+    //         ],
+    //         200
+    //     );
+    // }
 }
 

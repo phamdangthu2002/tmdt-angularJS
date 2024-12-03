@@ -209,9 +209,6 @@
                             </div>
                             <div class="d-flex justify-content-center align-items-center mt-3">
                                 <!-- Nút điều hướng bên trái -->
-                                {{-- <a class="btn btn-light btn-outline-primary border me-2" id="scrollLeft">
-                                    <i class='bx bx-chevron-left'></i>
-                                </a> --}}
                                 <i class='bx bx-chevron-left' id="scrollLeft" style="font-size: 40px;cursor: pointer;"></i>
 
                                 <!-- Vùng chứa ảnh nhỏ -->
@@ -219,13 +216,12 @@
                                     style="overflow-x: auto; white-space: nowrap; max-width: 300px;">
                                     <img ng-src="@{{ image.url }}" alt="Image 1" class="small-image"
                                         style="width: 50px; margin-right: 10px; cursor: pointer;"
-                                        ng-repeat="(index, image) in sanphamDetail.images | limitTo: sanphamDetail.images.length - 1 : 1"
+                                        ng-repeat="(index, image) in sanphamDetail.images"
                                         ng-class="{'active': $index === 0}" ng-click="changeMainImage(image, index)">
                                 </div>
+                                {{-- ng-repeat nay dua len tren neu k muon co anh dau --}}
+                                {{-- ng-repeat="(index, image) in sanphamDetail.images | limitTo: sanphamDetail.images.length - 1 : 1" --}}
                                 <!-- Nút điều hướng bên phải -->
-                                {{-- <a class="btn btn-light btn-outline-primary border ms-2" id="scrollRight">
-                                    <i class='bx bx-chevron-right'></i>
-                                </a> --}}
                                 <i class='bx bx-chevron-right' id="scrollRight"
                                     style="font-size: 40px;cursor: pointer;"></i>
                             </div>

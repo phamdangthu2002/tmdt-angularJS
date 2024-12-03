@@ -32,7 +32,7 @@
 
     <div class="container mb-5">
         @include('user.layouts.breadcrumb')
-        <form action="/api/thanh-toan/{{ $user->id }}" method="POST">
+        <form action="/user/thanh-toan/payment/{{ $user->id }}" method="POST">
 
             <h2 class="mb-4 text-center">Thanh Toán</h2>
             <div class="row g-4">
@@ -73,7 +73,7 @@
                                     $quantitys = $chitietgiohangs->sum('quantity');
                                 @endphp
                             @endforeach
-                            <input type="text" name="quantity" value="{{ $quantitys }}">
+                            <input type="hidden" name="quantity" value="{{ $quantitys }}">
 
                             <!-- Tổng cộng -->
                             <div class="d-flex justify-content-between align-items-center mt-3">
@@ -126,8 +126,7 @@
                                 </select>
                             </div>
                             <div class="text-end">
-                                <button type="submit" class="btn btn-pay btn-lg text-white"
-                                    onclick="processPayment()">Thanh Toán</button>
+                                <button type="submit" class="btn btn-pay btn-lg text-white">Thanh Toán</button>
                             </div>
                         </div>
                     </div>
@@ -135,20 +134,4 @@
             </div>
         </form>
     </div>
-    <script>
-        // Hàm xử lý khi nhấn nút thanh toán
-        function processPayment(event) {
-            event.preventDefault(); // Ngừng hành động mặc định của form
-
-            var paymentMethod = document.getElementById('payment_method').value; // Lấy phương thức thanh toán đã chọn
-
-            if (paymentMethod === 'bank') {
-                // Nếu chọn "Chuyển khoản ngân hàng", chuyển đến trang thanh toán qua chuyển khoản
-                window.location.href = '/thanh-toan-chuyen-khoan'; // Thay đổi đường dẫn này theo yêu cầu của bạn
-            } else {
-                // Nếu chọn phương thức khác (COD hoặc thẻ tín dụng), gửi form
-                document.getElementById('paymentForm').submit();
-            }
-        }
-    </script>
 @endsection
