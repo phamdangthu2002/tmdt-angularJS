@@ -13,7 +13,8 @@
                     </a>
                     <ul class="dropdown-menu text-center" id="categoryDropdownMenu">
                         <li ng-repeat="danhmuc in danhmucs">
-                            <a class="dropdown-item" style="cursor: pointer" ng-click="danhmucID(danhmuc.id)">@{{ danhmuc.name }}</a>
+                            <a class="dropdown-item" style="cursor: pointer"
+                                ng-click="danhmucID(danhmuc.id)">@{{ danhmuc.name }}</a>
                         </li>
                     </ul>
                 </li>
@@ -27,7 +28,7 @@
                         <div class="user-dropdown text-center" id="userDropdown">
                             <a href="#">Thông Tin Tài Khoản</a>
                             <a href="#">Lịch Sử Đơn Hàng</a>
-                            <a href="/auth/logout">Đăng Xuất</a>
+                            <a href="javascript:void(0)" id="logoutLink">Đăng Xuất</a>
                         </div>
                     </div>
                     <!-- Hiển thị nút giỏ hàng -->
@@ -44,3 +45,19 @@
         </div>
     </div>
 </nav>
+<script>
+    document.getElementById('logoutLink').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Bạn có chắc chắn muốn đăng xuất?',
+            text: 'Bạn sẽ bị đăng xuất khỏi tài khoản.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng Ý',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/auth/logout'; // Chuyển hướng đến trang đăng xuất
+            }
+        });
+    });
+</script>

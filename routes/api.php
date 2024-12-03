@@ -50,6 +50,7 @@ Route::prefix('san-pham')->group(function () {
     Route::prefix('cart')->group(function () {
         Route::post('/add', [ApiController::class, 'addToCart']);
         Route::get('/all/{id}', [ApiController::class, 'allCart']);
+        Route::delete('/delete/{id}', [ApiController::class, 'deleteCart']);
     });
 });
 

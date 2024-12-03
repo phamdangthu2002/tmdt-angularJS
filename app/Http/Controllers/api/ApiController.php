@@ -19,6 +19,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use JWTAuth; // Nếu bạn dùng JWT, hoặc auth nếu dùng Auth thông thường
@@ -486,7 +487,11 @@ class ApiController extends Controller
                 'message' => 'Giỏ hàng không tồn tại!'
             ], 404);
         }
-        $cartItem = Chitietgiohang::where('giohang_id', $cart->id)->where('sanpham_id', $request->sanpham_id)->first();
+        $cartItem = Chitietgiohang::where('giohang_id', $cart->id)
+            ->where('ram', $request->ram)
+            ->where('rom', $request->rom)
+            ->where('color', $request->color)
+            ->where('sanpham_id', $request->sanpham_id)->first();
         if (!$cartItem) {
             return response()->json([
                 'error' => true,
@@ -497,6 +502,54 @@ class ApiController extends Controller
         $cartItem->save();
         return response()->json([
             'message' => 'Cập nhật số lượng thành công!',
+            'cartItem' => $cartItem
+        ], 200);
+    }
+
+    public function deleteCart(Request $request, $id)
+    {
+        // Log dữ liệu nhận được từ client
+        Log::info('Dữ liệu gửi từ client:', [
+            'sanpham_id' => $request->sanpham_id,
+            'ram' => $request->ram,
+            'rom' => $request->rom,
+            'color' => $request->color
+        ]);
+
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Người dùng không tồn tại!'
+            ], 404);
+        }
+
+        $cart = Giohang::where('user_id', $user->id)->where('trangthai', 'Chưa đặt hàng')->latest()->first();
+        if (!$cart) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Giỏ hàng không tồn tại!'
+            ], 404);
+        }
+
+        $cartItem = Chitietgiohang::where('giohang_id', $cart->id)
+            ->where('ram', $request->ram)
+            ->where('rom', $request->rom)
+            ->where('color', $request->color)
+            ->where('sanpham_id', $request->sanpham_id)
+            ->first();
+
+        if (!$cartItem) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Sản phẩm không tồn tại trong giỏ hàng!'
+            ], 404);
+        }
+
+        $cartItem->delete();
+
+        return response()->json([
+            'message' => 'Xóa sản phẩm khỏi giỏ hàng thành công!',
             'cartItem' => $cartItem
         ], 200);
     }

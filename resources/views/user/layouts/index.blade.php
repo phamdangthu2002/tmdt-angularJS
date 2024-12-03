@@ -52,14 +52,51 @@
 
         // Service để tái sử dụng logic API
         app.service('apiService', function($http) {
+            // Phương thức GET
             this.get = function(url) {
                 return $http.get(url);
             };
 
+            // Phương thức POST
             this.post = function(url, data) {
                 return $http.post(url, data);
             };
+
+            // Phương thức PUT
+            this.put = function(url, data) {
+                return $http.put(url, data);
+            };
+
+            // Phương thức DELETE
+            this.delete = function(url, data) {
+                return $http({
+                    method: 'DELETE',
+                    url: url,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            };
+
+            // Phương thức PATCH (cập nhật một phần tài nguyên)
+            this.patch = function(url, data) {
+                return $http({
+                    method: 'PATCH',
+                    url: url,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            };
+
+            // Phương thức HEAD (kiểm tra tài nguyên mà không tải về body)
+            this.head = function(url) {
+                return $http.head(url);
+            };
         });
+
 
         // Controller: Đăng ký người dùng
         app.controller('ctrlRegister', function($scope, apiService) {
@@ -266,7 +303,6 @@
                             (($scope.sanphamDetail.price - $scope.sanphamDetail.price_sale) / $scope
                                 .sanphamDetail.price) * 100
                         );
-                        $scope.sanphamDetail.quantity = 1;
                     },
                     function(error) {
                         console.error("Lỗi khi gọi API chi tiết sản phẩm:", error);
@@ -325,7 +361,6 @@
                     }
                 );
             };
-
         });
 
 
@@ -342,6 +377,7 @@
                 apiService.get('/api/san-pham/cart/all/' + user_id).then(
                     function(response) {
                         $scope.cart = response.data.carts || [];
+                        console.log($scope.cart);
                         $scope.cart.forEach(function(item) {
                             item.quantity = item.quantity || 1; // Đảm bảo quantity luôn có giá trị
                         });
@@ -372,6 +408,50 @@
                 window.location.href = '/user/thanh-toan/' + user_id;
             }
 
+            $scope.deleteCart = function(item) {
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa sản phẩm này?',
+                    text: item.product.name, // Hiển thị tên sản phẩm nếu cần
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Đồng Ý',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Gửi yêu cầu xóa sản phẩm chỉ khi người dùng xác nhận
+                        const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }};
+
+                        apiService.delete(`/api/san-pham/cart/delete/${user_id}`, {
+                            quantity: item.quantity,
+                            sanpham_id: item.sanpham_id, // Kiểm tra item.sanpham_id
+                            ram: item.ram,
+                            rom: item.rom,
+                            color: item.color
+                        }).then(
+                            function(response) {
+                                Swal.fire({
+                                    title: 'Thành Công!',
+                                    text: 'Sản phẩm đã được xóa khỏi giỏ hàng.',
+                                    icon: 'success',
+                                    confirmButtonText: 'Đồng Ý'
+                                });
+                                $scope.getCart(); // Cập nhật lại giỏ hàng sau khi xóa
+                            },
+                            function(error) {
+                                console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
+                                Swal.fire({
+                                    title: 'Lỗi!',
+                                    text: 'Không thể xóa sản phẩm khỏi giỏ hàng.',
+                                    icon: 'error',
+                                    confirmButtonText: 'Đồng Ý'
+                                });
+                            }
+                        );
+                    }
+                });
+            };
+
+
             // Gọi khi khởi tạo
             $scope.getCart();
         });
@@ -381,34 +461,38 @@
         app.controller('QuantityController', function($scope, apiService, $rootScope) {
             $scope.min = 1; // Giá trị tối thiểu
             $scope.max = 10; // Giá trị tối đa
-            const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }};
+            const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }}; // Lấy ID người dùng
 
             // Hàm tăng số lượng
-            $scope.increaseQuantity = function(id) {
-                if ($scope.item.quantity < $scope.max) {
-                    $scope.item.quantity++;
-                    $scope.updateQuantity(id, user_id);
+            $scope.increaseQuantity = function(item) {
+                if (item.quantity < $scope.max) {
+                    item.quantity++; // Tăng số lượng của sản phẩm
+                    $scope.updateQuantity(item);
                 }
             };
 
             // Hàm giảm số lượng
-            $scope.decreaseQuantity = function(id) {
-                if ($scope.item.quantity > $scope.min) {
-                    $scope.item.quantity--;
-                    $scope.updateQuantity(id, user_id);
+            $scope.decreaseQuantity = function(item) {
+                if (item.quantity > $scope.min) {
+                    item.quantity--; // Giảm số lượng của sản phẩm
+                    $scope.updateQuantity(item);
                 }
             };
 
             // Hàm gửi dữ liệu cập nhật lên server
-            $scope.updateQuantity = function(id, user_id) {
+            $scope.updateQuantity = function(item) {
                 if (!user_id) {
                     console.error('Người dùng chưa đăng nhập!');
-                    return; // Ngăn việc gửi yêu cầu nếu không có user_id
+                    return; // Ngừng gửi yêu cầu nếu người dùng chưa đăng nhập
                 }
 
+                // Gửi yêu cầu API để cập nhật số lượng
                 apiService.post(`/api/san-pham/update-quantity/${user_id}`, {
-                    quantity: $scope.item.quantity,
-                    sanpham_id: id,
+                    quantity: item.quantity,
+                    sanpham_id: item.product.id,
+                    ram: item.ram,
+                    rom: item.rom,
+                    color: item.color
                 }).then(
                     function(response) {
                         console.log('Cập nhật thành công:', response.data);
@@ -422,8 +506,6 @@
                 );
             };
         });
-
-
 
         // Hiển thị loader ngắn gọn
         window.addEventListener('load', function() {

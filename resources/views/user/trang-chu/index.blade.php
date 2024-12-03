@@ -283,9 +283,9 @@
                                         <label for="quantityInput">Số Lượng:</label>
                                         <div class="input-group" style="width: 120px;">
                                             <button class="btn btn-outline-secondary" id="decreaseQuantity">-</button>
-                                            <input type="number" class="form-control text-center" value="1"
-                                                min="1" max="10" id="quantityInput"
-                                                ng-model="sanphamDetail.quantity">
+                                            <input type="number" class="form-control text-center"
+                                                value="1" min="1" max="10"
+                                                id="quantityInput" ng-model="sanphamDetail.quantity">
                                             <button class="btn btn-outline-secondary" id="increaseQuantity">+</button>
                                         </div>
                                     </div>

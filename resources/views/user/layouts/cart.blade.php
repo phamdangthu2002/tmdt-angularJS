@@ -31,26 +31,16 @@
                             <div class="item-details flex-grow-1 ms-3">
                                 <h6 class="mb-0">@{{ item.product.name }}</h6>
                                 <p class="mb-2 text-success product-description">@{{ item.product.mota }}</p>
-                                {{-- <div class="d-flex align-items-center">
-                                    <div class="input-group" style="width: 120px;">
-                                        <button class="btn btn-outline-secondary" id="decreaseQuantity">-</button>
-                                        <input type="text" class="form-control text-center"
-                                            value="@{{ item.quantity }}" min="1" max="10"
-                                            id="quantityInput">
-                                        <button class="btn btn-outline-secondary" id="increaseQuantity">+</button>
-                                    </div>
-                                </div> --}}
+                        
                                 <div ng-controller="QuantityController">
                                     <div class="input-group" style="width: 120px;">
-                                        <button class="btn btn-outline-secondary"
-                                            ng-click="decreaseQuantity(item.product.id)">-</button>
+                                        <button class="btn btn-outline-secondary" ng-click="decreaseQuantity(item)">-</button>
                                         <input type="text" class="form-control text-center" ng-model="item.quantity"/>
-                                        <button class="btn btn-outline-secondary"
-                                            ng-click="increaseQuantity(item.product.id)">+</button>
+                                        <button class="btn btn-outline-secondary" ng-click="increaseQuantity(item)">+</button>
                                     </div>
                                 </div>
+                        
                                 <p class="text-danger mb-0 mt-2">
-                                    <!-- Kiểm tra nếu có giá sale thì hiển thị giá sale, nếu không có thì hiển thị giá gốc -->
                                     <span ng-if="item.product.price_sale">
                                         @{{ (item.product.price_sale) | number }} VND
                                     </span>
@@ -59,8 +49,7 @@
                                     </span>
                                 </p>
                             </div>
-                            <button class="btn btn-danger btn-sm bx bx-trash"
-                                ng-click="deleteCart(item.sanpham_id)"></button>
+                            <button class="btn btn-danger btn-sm bx bx-trash" ng-click="deleteCart(item)">Xóa</button>
                         </div>
                     </div>
                 </div>
