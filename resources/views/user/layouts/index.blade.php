@@ -263,9 +263,10 @@
                     function(response) {
                         $scope.sanphamDetail = response.data.data;
                         $scope.sanphamDetail.price_percent = Math.round(
-                            (($scope.sanphamDetail.price - $scope.sanphamDetail.price_sale) /
-                                $scope.sanphamDetail.price) * 100
+                            (($scope.sanphamDetail.price - $scope.sanphamDetail.price_sale) / $scope
+                                .sanphamDetail.price) * 100
                         );
+                        $scope.sanphamDetail.quantity = 1;
                     },
                     function(error) {
                         console.error("Lỗi khi gọi API chi tiết sản phẩm:", error);
@@ -341,6 +342,9 @@
                 apiService.get('/api/san-pham/cart/all/' + user_id).then(
                     function(response) {
                         $scope.cart = response.data.carts || [];
+                        $scope.cart.forEach(function(item) {
+                            item.quantity = item.quantity || 1; // Đảm bảo quantity luôn có giá trị
+                        });
                         $scope.total = $scope.cart.reduce((sum, item) => {
                             const price = item.product.price_sale || item.product.price;
                             return sum + item.quantity * price;
@@ -362,6 +366,7 @@
                 $scope.getCart();
             });
 
+            // Chức năng thanh toán
             $scope.Thanhtoan = function() {
                 const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }};
                 window.location.href = '/user/thanh-toan/' + user_id;
@@ -369,6 +374,53 @@
 
             // Gọi khi khởi tạo
             $scope.getCart();
+        });
+
+
+        // Controller: Update Quantity
+        app.controller('QuantityController', function($scope, apiService, $rootScope) {
+            $scope.min = 1; // Giá trị tối thiểu
+            $scope.max = 10; // Giá trị tối đa
+            const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }};
+
+            // Hàm tăng số lượng
+            $scope.increaseQuantity = function(id) {
+                if ($scope.item.quantity < $scope.max) {
+                    $scope.item.quantity++;
+                    $scope.updateQuantity(id, user_id);
+                }
+            };
+
+            // Hàm giảm số lượng
+            $scope.decreaseQuantity = function(id) {
+                if ($scope.item.quantity > $scope.min) {
+                    $scope.item.quantity--;
+                    $scope.updateQuantity(id, user_id);
+                }
+            };
+
+            // Hàm gửi dữ liệu cập nhật lên server
+            $scope.updateQuantity = function(id, user_id) {
+                if (!user_id) {
+                    console.error('Người dùng chưa đăng nhập!');
+                    return; // Ngăn việc gửi yêu cầu nếu không có user_id
+                }
+
+                apiService.post(`/api/san-pham/update-quantity/${user_id}`, {
+                    quantity: $scope.item.quantity,
+                    sanpham_id: id,
+                }).then(
+                    function(response) {
+                        console.log('Cập nhật thành công:', response.data);
+
+                        // Phát sự kiện cập nhật giỏ hàng
+                        $rootScope.$broadcast("updateCart");
+                    },
+                    function(error) {
+                        console.error('Lỗi khi cập nhật:', error);
+                    }
+                );
+            };
         });
 
 

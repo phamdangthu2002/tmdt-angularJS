@@ -43,6 +43,8 @@ Route::prefix('san-pham')->group(function () {
     Route::post('/upload-anh', [ApiController::class, 'uploadAnh']);
     Route::delete('/delete-anh/{id}', [ApiController::class, 'delAnh']);
 
+    Route::post('/update-quantity/{id}',[ApiController::class,'updateQuantity']);
+
     Route::get('/danhmuc/{id}', [ApiController::class, 'sanphamDanhmucID']);
 
     Route::prefix('cart')->group(function () {

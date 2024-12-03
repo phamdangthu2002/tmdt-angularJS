@@ -27,17 +27,26 @@
                         <p class="text-center text-success" ng-if="cart.length === 0">Giỏ hàng hiện đang trống.</p>
                         <!-- Sản phẩm mẫu 1 -->
                         <div class="cart-item d-flex align-items-center mb-3" ng-repeat="item in cart">
-                            <img ng-src="@{{item.product.images[0].url}}" class="img-thumbnail" alt="iPhone 14 Pro">
+                            <img ng-src="@{{ item.product.images[0].url }}" class="img-thumbnail" alt="iPhone 14 Pro">
                             <div class="item-details flex-grow-1 ms-3">
                                 <h6 class="mb-0">@{{ item.product.name }}</h6>
                                 <p class="mb-2 text-success product-description">@{{ item.product.mota }}</p>
-                                <div class="d-flex align-items-center">
+                                {{-- <div class="d-flex align-items-center">
                                     <div class="input-group" style="width: 120px;">
                                         <button class="btn btn-outline-secondary" id="decreaseQuantity">-</button>
                                         <input type="text" class="form-control text-center"
                                             value="@{{ item.quantity }}" min="1" max="10"
                                             id="quantityInput">
                                         <button class="btn btn-outline-secondary" id="increaseQuantity">+</button>
+                                    </div>
+                                </div> --}}
+                                <div ng-controller="QuantityController">
+                                    <div class="input-group" style="width: 120px;">
+                                        <button class="btn btn-outline-secondary"
+                                            ng-click="decreaseQuantity(item.product.id)">-</button>
+                                        <input type="text" class="form-control text-center" ng-model="item.quantity"/>
+                                        <button class="btn btn-outline-secondary"
+                                            ng-click="increaseQuantity(item.product.id)">+</button>
                                     </div>
                                 </div>
                                 <p class="text-danger mb-0 mt-2">
@@ -50,7 +59,8 @@
                                     </span>
                                 </p>
                             </div>
-                            <button class="btn btn-danger btn-sm bx bx-trash" ng-click="deleteCart(item.sanpham_id)"></button>
+                            <button class="btn btn-danger btn-sm bx bx-trash"
+                                ng-click="deleteCart(item.sanpham_id)"></button>
                         </div>
                     </div>
                 </div>
@@ -58,7 +68,8 @@
                     <h5 class="text-end">Tổng: <span class="text-success" id="cartTotal">@{{ total | number }}
                             VNĐ</span></h5>
                     <div>
-                        <a href="#" class="btn btn-primary" ng-if="cart.length !== 0" ng-click="Thanhtoan()">Thanh Toán</a>
+                        <a href="#" class="btn btn-primary" ng-if="cart.length !== 0" ng-click="Thanhtoan()">Thanh
+                            Toán</a>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>

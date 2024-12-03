@@ -401,14 +401,14 @@ class ApiController extends Controller
         }
 
         // Tìm giỏ hàng của người dùng, nếu không có thì tạo mới
-        // $cart = Giohang::where('user_id', $user_id)->first();
+        $cart = Giohang::where('user_id', $user_id)->where('trangthai', 'Chưa đặt hàng')->first();
 
-        // if (!$cart) {
+        if (!$cart) {
             // Nếu chưa có giỏ hàng, tạo giỏ hàng mới
             $cart = new Giohang();
             $cart->user_id = $user_id;
             $cart->save();
-        // }
+        }
 
         // Tìm chi tiết giỏ hàng của sản phẩm, kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
         $cartItem = Chitietgiohang::where('giohang_id', $cart->id)
@@ -470,6 +470,36 @@ class ApiController extends Controller
         ], 200);
     }
 
+    public function updateQuantity(Request $request, $id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Người dùng không tồn tại!'
+            ], 404);
+        }
+        $cart = Giohang::where('user_id', $user->id)->where('trangthai', 'Chưa đặt hàng')->latest()->first();
+        if (!$cart) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Giỏ hàng không tồn tại!'
+            ], 404);
+        }
+        $cartItem = Chitietgiohang::where('giohang_id', $cart->id)->where('sanpham_id', $request->sanpham_id)->first();
+        if (!$cartItem) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Sản phẩm không tồn tại trong giỏ hàng!'
+            ], 404);
+        }
+        $cartItem->quantity = $request->quantity;
+        $cartItem->save();
+        return response()->json([
+            'message' => 'Cập nhật số lượng thành công!',
+            'cartItem' => $cartItem
+        ], 200);
+    }
 
 
     ////////////////////////////////////////user////////////////////////////////////////////
