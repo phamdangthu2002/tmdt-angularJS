@@ -43,7 +43,8 @@
                         <div class="card-body">
                             <!-- Duyệt qua từng chi tiết giỏ hàng -->
                             @foreach ($chitietgiohangs as $chitiet)
-                                <input type="hidden" name="sanpham_id" value="{{ $chitiet->product->id }}">
+                                <input type="hidden" name="sanpham_id[]" value="{{ $chitiet->product->id }}">
+                                <input type="text" name="quantity[]" value="{{ $chitiet->quantity }}">
                                 <div class="row mb-4">
                                     <!-- Hình ảnh sản phẩm -->
                                     <div class="col-4 d-flex justify-content-center align-items-center">
@@ -73,7 +74,7 @@
                                     $quantitys = $chitietgiohangs->sum('quantity');
                                 @endphp
                             @endforeach
-                            <input type="hidden" name="quantity" value="{{ $quantitys }}">
+                            <input type="hidden" name="quantitys" value="{{ $quantitys }}">
 
                             <!-- Tổng cộng -->
                             <div class="d-flex justify-content-between align-items-center mt-3">

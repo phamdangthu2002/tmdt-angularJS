@@ -33,7 +33,7 @@ class UserController extends Controller
     public function thanhtoan($id)
     {
         $user = User::find($id);  // Tìm người dùng theo ID
-        $giohangs = Giohang::where('user_id', $user->id)->where('trangthai','Chưa đặt hàng')->get();  // Lấy tất cả giỏ hàng của người dùng
+        $giohangs = Giohang::where('user_id', $user->id)->where('trangthai', 'Chưa đặt hàng')->get();  // Lấy tất cả giỏ hàng của người dùng
 
         // Khởi tạo mảng chứa tất cả các chi tiết giỏ hàng
         $chitietgiohangs = collect();
@@ -120,11 +120,18 @@ class UserController extends Controller
         $phone = $request->input('phone');
         $diachi = $request->input('diachi');
         $price = $request->input('price');
-        $sanpham_id = $request->input('sanpham_id');
-        $quantity = $request->input('quantity');
+        $sanpham_ids = $request->input('sanpham_id', []);  // Nhận mảng các ID sản phẩm
+        $quantities = $request->input('quantity', []);     // Nhận mảng các số lượng sản phẩm
         $phuongthuc = $request->input('phuongthuc');
         $trangthai_id = 1;
-        // dd($name, $email, $phone, $diachi, $price, $sanpham_id, $quantity, $phuongthuc);
+
+        // Kiểm tra xem các mảng có đủ phần tử không
+        if (count($sanpham_ids) != count($quantities)) {
+            return redirect()->back()->with('error', 'Số lượng sản phẩm và số lượng không khớp.');
+        }
+
+        // In thông tin ra màn hình để kiểm tra
+        // dd($name, $email, $phone, $diachi, $price, $sanpham_ids, $quantities, $phuongthuc);
 
         // Kiểm tra người dùng có tồn tại hay không
         $user = User::find($id);
@@ -140,46 +147,57 @@ class UserController extends Controller
             'diachi' => $diachi,
         ]);
 
-        // Tạo đơn hàng và các chi tiết liên quan
+        // Tạo đơn hàng
         try {
-        $donhang = Donhang::create([
-            'user_id' => $id,
-            'trangthai_id' => $trangthai_id,
-            'price' => $price,
-            'ngaydathang' => Carbon::now(),
-        ]);
+            $donhang = Donhang::create([
+                'user_id' => $id,
+                'trangthai_id' => $trangthai_id,
+                'price' => $price,
+                'ngaydathang' => Carbon::now(),
+            ]);
 
-        Chitietdonhang::create([
-            'donhang_id' => $donhang->id,
-            'sanpham_id' => $sanpham_id,
-            'quantity' => $quantity,
-            'price' => $price,
-        ]);
+            // Tạo chi tiết đơn hàng cho mỗi sản phẩm
+            foreach ($sanpham_ids as $index => $sanpham_id) {
+                if (isset($quantities[$index])) {
+                    // Tính giá theo sản phẩm và số lượng
+                    $productPrice = $price;  // Nếu có nhiều loại giá, tính toán giá riêng ở đây
 
-        Payment::create([
-            'donhang_id' => $donhang->id,
-            'phuongthuc' => $phuongthuc,
-            'tong' => $price,
-        ]);
+                    // Tạo chi tiết đơn hàng
+                    Chitietdonhang::create([
+                        'donhang_id' => $donhang->id,
+                        'sanpham_id' => $sanpham_id,
+                        'quantity' => $quantities[$index],  // Sử dụng số lượng tương ứng với sản phẩm
+                        'price' => $productPrice * $quantities[$index],  // Tính tổng tiền cho sản phẩm này
+                    ]);
+                }
+            }
 
-        Payment_information::create([
-            'user_id' => $user->id,
-            'phuongthuc' => $phuongthuc,
-            'tong' => $price,
-        ]);
+            // Tạo thông tin thanh toán
+            Payment::create([
+                'donhang_id' => $donhang->id,
+                'phuongthuc' => $phuongthuc,
+                'tong' => $price,  // Cần tính lại tổng nếu có nhiều sản phẩm
+            ]);
 
-        // Cập nhật trạng thái giỏ hàng
-        $giohang = Giohang::where('user_id', $user->id)->latest()->first();
-        if ($giohang) {
-            $giohang->update(['trangthai' => 'Đã đặt hàng']);
-        }
+            Payment_information::create([
+                'user_id' => $user->id,
+                'phuongthuc' => $phuongthuc,
+                'tong' => $price,  // Tính tổng giá trị đơn hàng nếu cần
+            ]);
 
-        // Chuyển hướng kèm thông báo thành công
-        return redirect()->route('user.trangchu')->with('success', 'Thanh toán thành công!');
+            // Cập nhật trạng thái giỏ hàng
+            $giohang = Giohang::where('user_id', $user->id)->latest()->first();
+            if ($giohang) {
+                $giohang->update(['trangthai' => 'Đã đặt hàng']);
+            }
+
+            // Chuyển hướng kèm thông báo thành công
+            return redirect()->route('user.trangchu')->with('success', 'Thanh toán thành công!');
         } catch (Exception $e) {
-        // Xử lý nếu có lỗi xảy ra
-        return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            // Xử lý nếu có lỗi xảy ra
+            return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
+
 
 }

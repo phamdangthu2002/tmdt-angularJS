@@ -135,6 +135,22 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-white" data-bs-toggle="collapse"
+                            data-bs-target="#donhang" aria-expanded="false">
+                            <i class="bx bx-receipt me-2"></i>
+                            <span>Đơn hàng</span>
+                        </a>
+                        <!-- Submenu Donhang -->
+                        <ul id="donhang" class="collapse ms-3">
+                            <li>
+                                <a href="/admin/don-hang" class="item nav-link text-white" style="font-size: 13px">
+                                    <i class="bx bx-cog me-2" style="font-size: 13px"></i>
+                                    <span>Quản lý</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
                     <!-- Mục Logout -->
                     <li class="nav-item">
@@ -180,7 +196,7 @@
                 loaderContainer.style.display = 'none';
                 mainContent.style.display = 'block';
                 document.body.style.overflow = 'auto'; // Cho phép cuộn
-            }, 1000); // 5 giây
+            }, 2000); // 5 giây
         });
 
 

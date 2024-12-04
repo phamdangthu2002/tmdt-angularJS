@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\DanhmucController;
+use App\Http\Controllers\admin\DonhangController;
 use App\Http\Controllers\admin\SanphamController;
 use App\Http\Controllers\admin\TrangthaiController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
@@ -41,6 +42,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('/', [SanphamController::class, 'index'])->name('admin.sanpham');
         Route::get('/show', [SanphamController::class, 'show'])->name('admin.showSanpham');
     });
+
+    Route::get('/don-hang', [DonhangController::class, 'index'])->name('admin.donhang');
 
     Route::prefix('trang-thai')->group(function () {
         Route::get('/', [TrangthaiController::class, 'trangthai'])->name('admin.trangthai');

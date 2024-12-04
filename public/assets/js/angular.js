@@ -587,7 +587,9 @@ app.controller("ctrUserEdit", function ($scope, $http, $rootScope) {
                 return; // Dừng lại nếu ngày sinh không hợp lệ
             }
         }
-        $http.post("/api/user/update/" + $scope.userEdit.id, $scope.userEdit).then(
+        $http
+            .post("/api/user/update/" + $scope.userEdit.id, $scope.userEdit)
+            .then(
                 function (response) {
                     alert("Cập nhật thông tin người dùng thành công!");
                     $scope.userEdit = {};
@@ -704,4 +706,81 @@ app.controller("ctrlShowTrangthai", function ($scope, $http) {
             }
         );
     };
+});
+
+/////////////////////////////////////////////////don hang////////////////////////////////////////
+app.controller("ctrlDonhang", function ($scope, $http) {
+    $scope.fetchData = async function (page = 1) {
+        try {
+            // Gọi API với tham số trang
+            const response = await $http.get(`/api/don-hang/all?page=${page}`);
+
+            // Gán dữ liệu vào scope
+            $scope.donhangs = response.data.donhang.data; // Danh sách đơn hàng
+            $scope.pagination = {
+                current_page: response.data.donhang.current_page,
+                last_page: response.data.donhang.last_page,
+                prev_page_url: response.data.donhang.prev_page_url,
+                next_page_url: response.data.donhang.next_page_url,
+            };
+
+            // Lấy danh sách trạng thái
+            const trangthaiResponse = await $http.get("/api/trang-thai/all");
+            $scope.trangthais = trangthaiResponse.data.trangthai;
+
+            // Cập nhật scope sau khi nhận dữ liệu
+            $scope.$apply(function () {
+                $scope.donhang = response.data.donhang;
+            });
+            console.log($scope.pagination);
+        } catch (error) {
+            console.error("Lỗi khi lấy danh sách đơn hàng:", error);
+        }
+    };
+
+    // Hàm lấy chi tiết đơn hàng
+    $scope.chiTiet = async function (id) {
+        try {
+            const response = await $http.get(`/api/don-hang/chitiet/${id}`);
+
+            // Gán dữ liệu chi tiết đơn hàng
+            $scope.chitietdonhang = response.data.chitietdonhang;
+            $scope.donhang = response.data.donhang;
+            $scope.trangthai_id = response.data.donhang.trangthai.id;
+            // Gọi $scope.$apply() để thông báo AngularJS cập nhật lại view
+            $scope.$apply(function () {
+                $scope.donhang = response.data.donhang;
+            });
+            console.log($scope.chitietdonhang);
+            console.log($scope.donhang);
+            console.log($scope.trangthai_id);
+        } catch (error) {
+            console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
+        }
+    };
+
+    // Hàm update
+    $scope.updateDonhang = function (id) {
+        $scope.trangthai = {
+            id: $scope.trangthai_id,
+            donhang_id: id,
+        };
+        $http.put("/api/don-hang/update", $scope.trangthai).then(
+            function (response) {
+                console.log(response.data);
+                // Sau khi cập nhật thành công, gọi lại API để tải lại danh sách đơn hàng
+                $scope.fetchData(); // Tải lại dữ liệu đơn hàng và trạng thái
+            },
+            function (error) {
+                console.error("Lỗi khi cập nhật đơn hàng:", error);
+                if (error.status === 422) {
+                    // Xử lý lỗi trả về từ API
+                    $scope.errors = error.data.errors;
+                }
+            }
+        );
+    };
+
+    // Gọi hàm fetchData
+    $scope.fetchData();
 });

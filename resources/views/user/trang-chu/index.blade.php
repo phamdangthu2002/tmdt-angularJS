@@ -166,7 +166,7 @@
         <div class="product-row">
             <div class="card product-card shadow-lg" ng-repeat="sanpham in sanphams">
                 <img ng-src="@{{ sanpham.image }}" class="card-img-top" alt="iPhone SE">
-                <span class="sale-badge"><i class='bx bx-tag icon-sale'></i>@{{ sanpham.price_percent }}% OFF</span>
+                <span class="sale-badge"><i class='bx bx-purchase-tag-alt icon-sale'></i>@{{ sanpham.price_percent }}% OFF</span>
                 <div class="card-body">
                     <span class="date-added">Ngày thêm: @{{ sanpham.updated_at | date: 'dd/MM/yyyy' }}</span>
                     <h5 class="card-title">
@@ -237,7 +237,7 @@
                                     @{{ sanphamDetail.price_sale | number }} VND
                                 </span>
                             </p>
-                            <p id="productTag" class="bx bx-purchase-tag badge bg-warning text-dark text-center"
+                            <p id="productTag" class="bx bx-purchase-tag-alt badge bg-warning text-dark text-center"
                                 style="font-weight: 600">
                                 Giảm @{{ sanphamDetail.price_percent }}%
                             </p>

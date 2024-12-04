@@ -22,6 +22,6 @@ class Chitietdonhang extends Model
 
     public function product()
     {
-        return $this->belongsTo(Sanpham::class);
+        return $this->belongsTo(Sanpham::class, 'sanpham_id');
     }
 }

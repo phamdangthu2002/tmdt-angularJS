@@ -5,7 +5,7 @@
     <div class="container mt-5" ng-controller="ctrlShowTrangthai">
         <div class="row">
             <h2 class="mb-4">Danh Sách Trạng Thái</h2>
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <table class="table table-bordered table-hover">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-header">
                         <h4>Sửa Trạng Thái</h4>

@@ -43,7 +43,7 @@ Route::prefix('san-pham')->group(function () {
     Route::post('/upload-anh', [ApiController::class, 'uploadAnh']);
     Route::delete('/delete-anh/{id}', [ApiController::class, 'delAnh']);
 
-    Route::post('/update-quantity/{id}',[ApiController::class,'updateQuantity']);
+    Route::post('/update-quantity/{id}', [ApiController::class, 'updateQuantity']);
 
     Route::get('/danhmuc/{id}', [ApiController::class, 'sanphamDanhmucID']);
 
@@ -52,6 +52,12 @@ Route::prefix('san-pham')->group(function () {
         Route::get('/all/{id}', [ApiController::class, 'allCart']);
         Route::delete('/delete/{id}', [ApiController::class, 'deleteCart']);
     });
+});
+
+Route::prefix('don-hang')->group(function () {
+    Route::get('/all', [ApiController::class, 'allDonhang']);
+    Route::get('/chitiet/{id}', [ApiController::class, 'chiTiet']);
+    Route::put('/update', [ApiController::class, 'updateDonhang']);
 });
 
 Route::prefix('trang-thai')->group(function () {

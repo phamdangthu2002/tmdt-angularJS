@@ -805,5 +805,84 @@ class ApiController extends Controller
     //         200
     //     );
     // }
+    /////////////////////////////////////////////////don hang////////////////////////////////////////////////
+    public function allDonhang(Request $request)
+    {
+        $donhang = Donhang::select(['id', 'user_id', 'trangthai_id', 'price', 'ngaydathang'])
+            ->with([
+                'user:id,name',
+                'trangthai:id,name'
+            ])
+            ->paginate(1);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Lấy danh sách đơn hàng thành công',
+            'donhang' => $donhang,
+        ], 200);
+    }
+    public function chiTiet($id)
+    {
+        // Lấy thông tin đơn hàng và các quan hệ
+        $donhang = Donhang::select(['id', 'user_id', 'trangthai_id', 'price', 'ngaydathang'])
+            ->where('id', $id)
+            ->with(['user:id,name,diachi,phone', 'trangthai:id,name']) // Lấy thông tin người dùng và trạng thái
+            ->first(); // Chỉ lấy 1 bản ghi
+
+        // Nếu không tìm thấy đơn hàng, trả về lỗi
+        if (!$donhang) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đơn hàng không tồn tại',
+            ], 404);
+        }
+
+        // Lấy chi tiết đơn hàng và thông tin sản phẩm
+        $chitietdonhang = Chitietdonhang::select(['id', 'donhang_id', 'sanpham_id', 'quantity', 'price'])
+            ->where('donhang_id', $id)
+            ->with(['product:id,name,price,price_sale']) // Lấy thông tin sản phẩm qua quan hệ product()
+            ->get();
+
+        // Trả về dữ liệu
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Lấy chi tiết đơn hàng thành công',
+            'donhang' => $donhang,
+            'chitietdonhang' => $chitietdonhang,
+        ], 200);
+    }
+
+    public function updateDonhang(Request $request)
+    {
+        // dd($request->id,$request->donhang_id);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'id' => 'required',
+            ],
+            [
+                'id.required' => 'Vui lòng chọn trạng thái',
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        $donhang = Donhang::find($request->donhang_id);
+        if (!$donhang) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đơn hàng không tồn tại',
+            ], 404);
+        }
+        $donhang->update([
+            'trangthai_id' => $request->id,
+        ]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cập nhật đơn hàng thành công',
+            'donhang' => $donhang,
+        ], 200);
+    }
 }
 
