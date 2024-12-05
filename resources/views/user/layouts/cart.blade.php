@@ -49,7 +49,7 @@
                                     </span>
                                 </p>
                             </div>
-                            <button class="btn btn-danger btn-sm bx bx-trash" ng-click="deleteCart(item)">Xóa</button>
+                            <button class="btn btn-danger btn-sm bx bx-trash" ng-click="deleteCart(item)"></button>
                         </div>
                     </div>
                 </div>

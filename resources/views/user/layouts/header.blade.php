@@ -27,7 +27,7 @@
                         <i class="bx bx-user bx-sm" id="userIcon"></i>
                         <div class="user-dropdown text-center" id="userDropdown">
                             <a href="#">Thông Tin Tài Khoản</a>
-                            <a href="#">Lịch Sử Đơn Hàng</a>
+                            <a href="/user/history-orders">Lịch Sử Đơn Hàng</a>
                             <a href="javascript:void(0)" id="logoutLink">Đăng Xuất</a>
                         </div>
                     </div>

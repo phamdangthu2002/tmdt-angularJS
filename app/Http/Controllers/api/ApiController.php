@@ -392,6 +392,7 @@ class ApiController extends Controller
         $rom = $productData['rom'];
         $color = $productData['color'];
 
+        // dd($user_id, $sanpham_id, $quantity, $ram, $rom, $color);
         // Tìm người dùng theo user_id
         $user = User::find($user_id);
         if (!$user) {
@@ -813,7 +814,7 @@ class ApiController extends Controller
                 'user:id,name',
                 'trangthai:id,name'
             ])
-            ->paginate(1);
+            ->paginate(15);
         return response()->json([
             'status' => 'success',
             'message' => 'Lấy danh sách đơn hàng thành công',
@@ -837,9 +838,9 @@ class ApiController extends Controller
         }
 
         // Lấy chi tiết đơn hàng và thông tin sản phẩm
-        $chitietdonhang = Chitietdonhang::select(['id', 'donhang_id', 'sanpham_id', 'quantity', 'price'])
+        $chitietdonhang = Chitietdonhang::select(['id', 'donhang_id', 'sanpham_id', 'quantity', 'price', 'ram', 'color', 'rom'])
             ->where('donhang_id', $id)
-            ->with(['product:id,name,price,price_sale']) // Lấy thông tin sản phẩm qua quan hệ product()
+            ->with(['product:id,name,price,price_sale', 'product.images']) // Lấy thông tin sản phẩm qua quan hệ product()
             ->get();
 
         // Trả về dữ liệu

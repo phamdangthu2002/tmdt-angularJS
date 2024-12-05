@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Chủ - Bán Điện Thoại</title>
+    <title>Trang Chủ - {{ $title }}</title>
     <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap-5.3.3-dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/boxicons-2.1.4/css/boxicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/user.css') }}">
@@ -240,7 +240,7 @@
 
 
         //Controller: Danh mục ID
-        app.controller('ctrldanhmucID', function($scope, $rootScope) {
+        app.controller('ctrldanhmucID', function($scope, $rootScope, apiService) {
             // Lấy dữ liệu từ $rootScope hoặc localStorage
             $scope.danhmucUrl = $rootScope.danhmucUrl || JSON.parse(localStorage.getItem("danhmucUrl"));
 
@@ -256,9 +256,89 @@
                 const modal = new bootstrap.Modal(document.getElementById("productDetailModal"));
                 modal.show();
             };
+            $scope.cart = [];
+            $scope.total = 0;
+
+            // Hàm lấy giỏ hàng
+            $scope.getCart = function() {
+                const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }};
+                if (!user_id) return;
+
+                apiService.get('/api/san-pham/cart/all/' + user_id).then(
+                    function(response) {
+                        $scope.cart = response.data.carts || [];
+                        console.log("Giỏ hàng hiện tại:", $scope.cart);
+
+                        $scope.cart.forEach(function(item) {
+                            item.quantity = item.quantity || 1; // Đảm bảo quantity luôn có giá trị
+                        });
+
+                        // Tính tổng tiền giỏ hàng
+                        $scope.total = $scope.cart.reduce((sum, item) => {
+                            const price = item.product.price_sale || item.product.price;
+                            return sum + item.quantity * price;
+                        }, 0);
+
+                        // Cập nhật tổng số lượng sản phẩm trong giỏ
+                        $rootScope.totalQuantity = $scope.cart.reduce(
+                            (total, item) => total + item.quantity,
+                            0
+                        );
+                    },
+                    function(error) {
+                        console.error("Lỗi khi gọi API giỏ hàng:", error);
+                    }
+                );
+            };
+
+            $scope.addCart = function(id) {
+                const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }};
+                if (!user_id) return;
+
+                const data = {
+                    user_id,
+                    product: {
+                        quantity: 1,
+                        ram: '4GB',
+                        rom: '64GB',
+                        color: 'Black',
+                        id: id,
+                    }
+                };
+
+                apiService.post('/api/san-pham/cart/add', data).then(
+                    function(response) {
+                        console.log("Sản phẩm đã được thêm vào giỏ hàng:", response.data);
+
+                        // Thông báo thành công khi sản phẩm được thêm vào giỏ hàng
+                        Swal.fire({
+                            title: 'Thêm vào giỏ hàng thành công!',
+                            text: 'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                            icon: 'success',
+                            confirmButtonText: 'Tiếp tục mua sắm'
+                        }).then(function() {
+                            // Sau khi người dùng nhấn "Tiếp tục mua sắm", có thể giữ lại trên trang hiện tại
+                        });
+
+                        // Phát sự kiện để cập nhật giỏ hàng
+                        $rootScope.$emit("updateCart");
+                    },
+                    function(error) {
+                        console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+
+                        // Thông báo lỗi khi thêm sản phẩm vào giỏ hàng
+                        Swal.fire({
+                            title: 'Lỗi!',
+                            text: 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.',
+                            icon: 'error',
+                            confirmButtonText: 'Thử lại'
+                        });
+                    }
+                );
+            }
+            // Gọi hàm getCart khi khởi tạo controller để tải giỏ hàng ban đầu
+            $scope.getCart();
         });
-
-
 
 
         // Controller: Sản phẩm
@@ -283,13 +363,94 @@
                     }
                 );
             };
-
             $scope.openProductDetail = function(id) {
                 $rootScope.$broadcast("openProductDetailModal", id);
                 const modal = new bootstrap.Modal(document.getElementById("productDetailModal"));
                 modal.show();
             };
 
+            $scope.cart = [];
+            $scope.total = 0;
+
+            // Hàm lấy giỏ hàng
+            $scope.getCart = function() {
+                const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }};
+                if (!user_id) return;
+
+                apiService.get('/api/san-pham/cart/all/' + user_id).then(
+                    function(response) {
+                        $scope.cart = response.data.carts || [];
+                        console.log("Giỏ hàng hiện tại:", $scope.cart);
+
+                        $scope.cart.forEach(function(item) {
+                            item.quantity = item.quantity || 1; // Đảm bảo quantity luôn có giá trị
+                        });
+
+                        // Tính tổng tiền giỏ hàng
+                        $scope.total = $scope.cart.reduce((sum, item) => {
+                            const price = item.product.price_sale || item.product.price;
+                            return sum + item.quantity * price;
+                        }, 0);
+
+                        // Cập nhật tổng số lượng sản phẩm trong giỏ
+                        $rootScope.totalQuantity = $scope.cart.reduce(
+                            (total, item) => total + item.quantity,
+                            0
+                        );
+                    },
+                    function(error) {
+                        console.error("Lỗi khi gọi API giỏ hàng:", error);
+                    }
+                );
+            };
+
+            $scope.addCart = function(id) {
+                const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }};
+                if (!user_id) return;
+
+                const data = {
+                    user_id,
+                    product: {
+                        quantity: 1,
+                        ram: '4GB',
+                        rom: '64GB',
+                        color: 'Black',
+                        id: id,
+                    }
+                };
+
+                apiService.post('/api/san-pham/cart/add', data).then(
+                    function(response) {
+                        console.log("Sản phẩm đã được thêm vào giỏ hàng:", response.data);
+
+                        // Thông báo thành công khi sản phẩm được thêm vào giỏ hàng
+                        Swal.fire({
+                            title: 'Thêm vào giỏ hàng thành công!',
+                            text: 'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                            icon: 'success',
+                            confirmButtonText: 'Tiếp tục mua sắm'
+                        }).then(function() {
+                            // Sau khi người dùng nhấn "Tiếp tục mua sắm", có thể giữ lại trên trang hiện tại
+                        });
+
+                        // Phát sự kiện để cập nhật giỏ hàng
+                        $rootScope.$emit("updateCart");
+                    },
+                    function(error) {
+                        console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+
+                        // Thông báo lỗi khi thêm sản phẩm vào giỏ hàng
+                        Swal.fire({
+                            title: 'Lỗi!',
+                            text: 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.',
+                            icon: 'error',
+                            confirmButtonText: 'Thử lại'
+                        });
+                    }
+                );
+            }
+            // Gọi hàm getCart khi khởi tạo controller để tải giỏ hàng ban đầu
+            $scope.getCart();
             $scope.getSanPhams();
         });
 
@@ -436,6 +597,7 @@
                                     confirmButtonText: 'Đồng Ý'
                                 });
                                 $scope.getCart(); // Cập nhật lại giỏ hàng sau khi xóa
+                                $scope.$applyAsync()
                             },
                             function(error) {
                                 console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
@@ -450,8 +612,6 @@
                     }
                 });
             };
-
-
             // Gọi khi khởi tạo
             $scope.getCart();
         });
@@ -506,6 +666,47 @@
                 );
             };
         });
+
+
+        /////////////////////////////////////////////////////////////lich su don hang////////////////////////////////////////////////////
+        app.controller('ctrlHistory', function($scope, apiService) {
+            $scope.history = [];
+            const user_id = {{ auth()->check() ? auth()->user()->id : 'null' }}; // Lấy ID người dùng
+
+            // Hàm tải lịch sử đơn hàng
+            const loadHistory = async function() {
+                try {
+                    const response = await apiService.get('/api/don-hang/all');
+                    $scope.historys = response.data.donhang.data;
+                    console.log('don hang', $scope.historys);
+
+                    // Đảm bảo giao diện cập nhật sau khi nhận dữ liệu
+                    $scope.$applyAsync();
+                } catch (error) {
+                    console.error('Lỗi khi tải lịch sử:', error);
+                }
+            };
+            $scope.loadChitiet = async function(id) {
+                try {
+                    const response = await apiService.get(`/api/don-hang/chitiet/${id}`);
+                    $scope.chitiets = response.data.chitietdonhang; // Danh sách chi tiết đơn hàng
+                    $scope.totalPrice = response.data.donhang.price; // Tổng tiền từ API
+                    $scope.$applyAsync()
+                } catch (error) {
+                    console.error('Lỗi khi tải chi tiết đơn hàng:', error);
+                }
+
+                // Lấy modal
+                const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+
+                // Hiển thị modal
+                modal.show();
+            }
+
+            // Gọi hàm khi controller được khởi tạo
+            loadHistory();
+        });
+
 
         // Hiển thị loader ngắn gọn
         window.addEventListener('load', function() {

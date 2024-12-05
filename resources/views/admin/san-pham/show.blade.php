@@ -1,6 +1,28 @@
 @extends('admin.layouts.index')
 @section('content')
     @include('admin.layouts.breadcrumb')
+    <style>
+        .descreption {
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            /* Giới hạn số dòng là 2 */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            /* Thêm ba dấu chấm (...) */
+            line-height: 1.5;
+            /* Điều chỉnh chiều cao dòng */
+            max-height: 6.5em;
+            /* Tương ứng với 2 dòng (1.5em mỗi dòng) */
+        }
+        img{
+            width: 100%;
+            height: 60px;
+            background-size: cover;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
     <div class="container mt-5" ng-controller="productController">
         <div class="card shadow-sm">
             <div class="card-body">
@@ -41,7 +63,7 @@
                             <td>@{{ product.price | currency: 'VND ': 0 }}</td>
                             <td>@{{ product.price_sale | currency: 'VND ': 0 }}</td>
                             <td>@{{ product.category.name }}</td>
-                            <td>@{{ product.mota }}</td>
+                            <td class="descreption">@{{ product.mota }}</td>
                             <td>@{{ product.slug }}</td>
                             <td>@{{ product.quantity_in_stock }}</td>
                             <td>

@@ -59,5 +59,5 @@ Route::prefix('user')->group(function () {
     Route::get('/danh-muc', [UserController::class, 'danhmuc'])->name('user.danhmuc');// danh muc
     Route::get('/thanh-toan/{id}', [UserController::class, 'thanhtoan'])->name('user.thanhtoan');
     Route::post('/thanh-toan/payment/{id}', [UserController::class, 'payment'])->name('user.payment');
-
+    Route::get('/history-orders', [UserController::class, 'lichSu']);
 });

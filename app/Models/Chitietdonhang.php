@@ -12,7 +12,10 @@ class Chitietdonhang extends Model
         'donhang_id',
         'sanpham_id',
         'quantity',
-        'price'
+        'price',
+        'ram',
+        'rom',
+        'color',
 
     ];
     public function order()

@@ -10,7 +10,9 @@ class AuthController extends Controller
 {
     public function login()
     {
-        return view('auth.login');
+        return view('auth.login',[
+            'title' => 'Đăng nhập'
+        ]);
     }
 
     public function postLogin(Request $request)
@@ -55,7 +57,9 @@ class AuthController extends Controller
 
     public function register()
     {
-        return view('auth.register');
+        return view('auth.register',[
+            'title' => 'Đăng ký'
+        ]);
     }
     public function logout()
     {

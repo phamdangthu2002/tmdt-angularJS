@@ -26,7 +26,7 @@ class UserController extends Controller
     public function danhmuc()
     {
         return view('user.danh-muc.index', [
-            'title' => 'Danh Muc'
+            'title' => 'Danh mục'
         ]);
     }
 
@@ -120,14 +120,17 @@ class UserController extends Controller
         $phone = $request->input('phone');
         $diachi = $request->input('diachi');
         $price = $request->input('price');
+        $ram = $request->input('ram', []);
+        $rom = $request->input('rom', []);
+        $color = $request->input('color', []);
         $sanpham_ids = $request->input('sanpham_id', []);  // Nhận mảng các ID sản phẩm
         $quantities = $request->input('quantity', []);     // Nhận mảng các số lượng sản phẩm
         $phuongthuc = $request->input('phuongthuc');
         $trangthai_id = 1;
-
+        // dd($ram, $rom, $color);
         // Kiểm tra xem các mảng có đủ phần tử không
-        if (count($sanpham_ids) != count($quantities)) {
-            return redirect()->back()->with('error', 'Số lượng sản phẩm và số lượng không khớp.');
+        if (count($sanpham_ids) !== count($quantities) || count($sanpham_ids) !== count($ram) || count($sanpham_ids) !== count($rom) || count($sanpham_ids) !== count($color)) {
+            return response()->json(['error' => 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.'], 422);
         }
 
         // In thông tin ra màn hình để kiểm tra
@@ -168,6 +171,9 @@ class UserController extends Controller
                         'sanpham_id' => $sanpham_id,
                         'quantity' => $quantities[$index],  // Sử dụng số lượng tương ứng với sản phẩm
                         'price' => $productPrice * $quantities[$index],  // Tính tổng tiền cho sản phẩm này
+                        'ram' => $ram[$index],
+                        'rom' => $rom[$index],
+                        'color' => $color[$index],
                     ]);
                 }
             }
@@ -199,5 +205,11 @@ class UserController extends Controller
         }
     }
 
+    public function lichSu()
+    {
+        return view('user.lich-su-don-hang.index', [
+            'title' => 'Lịch sử đơn hàng',
+        ]);
+    }
 
 }

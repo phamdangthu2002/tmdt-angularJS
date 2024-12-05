@@ -136,7 +136,13 @@
                         <span class="text-price-sale text-muted text-decoration-line-through">@{{ sanpham.price | number }}
                             VND</span>
                     </h6>
-                    <a class="btn btn-primary btn-buy"><i class='bx bx-cart'></i> Add to Cart</a>
+                    @auth
+                        <a class="btn btn-primary btn-buy" ng-click="addCart(sanpham.id)"><i class='bx bx-cart'></i> Add to
+                            Cart</a>
+                    @else
+                        <a class="btn btn-secondary btn-buy" onclick="showLoginAlert()"><i class='bx bx-cart'></i> Add to
+                            Cart</a>
+                    @endauth
                 </div>
             </div>
         </div>

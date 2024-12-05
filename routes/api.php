@@ -58,6 +58,7 @@ Route::prefix('don-hang')->group(function () {
     Route::get('/all', [ApiController::class, 'allDonhang']);
     Route::get('/chitiet/{id}', [ApiController::class, 'chiTiet']);
     Route::put('/update', [ApiController::class, 'updateDonhang']);
+    Route::get('/history/{id}', [ApiController::class, 'history']);
 });
 
 Route::prefix('trang-thai')->group(function () {

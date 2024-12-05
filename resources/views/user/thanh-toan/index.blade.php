@@ -44,7 +44,10 @@
                             <!-- Duyệt qua từng chi tiết giỏ hàng -->
                             @foreach ($chitietgiohangs as $chitiet)
                                 <input type="hidden" name="sanpham_id[]" value="{{ $chitiet->product->id }}">
-                                <input type="text" name="quantity[]" value="{{ $chitiet->quantity }}">
+                                <input type="hidden" name="quantity[]" value="{{ $chitiet->quantity }}">
+                                <input type="hidden" name="ram[]" value="{{ $chitiet->ram }}">
+                                <input type="hidden" name="rom[]" value="{{ $chitiet->rom }}">
+                                <input type="hidden" name="color[]" value="{{ $chitiet->color }}">
                                 <div class="row mb-4">
                                     <!-- Hình ảnh sản phẩm -->
                                     <div class="col-4 d-flex justify-content-center align-items-center">
@@ -60,6 +63,18 @@
                                         <div class="d-flex justify-content-between mb-2">
                                             <span>Số lượng:</span>
                                             <span>{{ $chitiet->quantity }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>RAM:</span>
+                                            <span>{{ $chitiet->ram }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>ROM:</span>
+                                            <span>{{ $chitiet->rom }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>olor:</span>
+                                            <span>{{ $chitiet->color }}</span>
                                         </div>
                                         <div class="d-flex justify-content-between mb-2">
                                             <span>Giá:</span>
